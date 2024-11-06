@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
-import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai'; // Importar íconos de React Icons
+import { useState } from "react";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai'; 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
- 
+
 interface Question {
   question: string;
   options: string[];
@@ -11,24 +11,66 @@ interface Question {
 }
 
 export default function TakeQuiz() {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const questions: Question[] = [
+    {
+      question: "¿Qué es una dirección IP?",
+      options: [
+        "Un protocolo de encriptación",
+        "Un tipo de red",
+        "Una dirección única para identificar dispositivos en una red",
+        "Un sistema operativo de red"
+      ],
+      correctAnswer: "Una dirección única para identificar dispositivos en una red",
+    },
+    {
+      question: "¿Cuál es la función principal de un router?",
+      options: [
+        "Almacenar datos",
+        "Gestionar archivos",
+        "Conectar diferentes redes entre sí",
+        "Proteger el sistema operativo"
+      ],
+      correctAnswer: "Conectar diferentes redes entre sí",
+    },
+    {
+      question: "¿Qué protocolo se usa comúnmente para enviar correos electrónicos?",
+      options: [
+        "HTTP",
+        "FTP",
+        "SMTP",
+        "IP"
+      ],
+      correctAnswer: "SMTP",
+    },
+    {
+      question: "¿Qué significa DNS?",
+      options: [
+        "Domain Network System",
+        "Domain Name System",
+        "Data Node Server",
+        "Direct Network Service"
+      ],
+      correctAnswer: "Domain Name System",
+    },
+    {
+      question: "¿Cuál de estos es un protocolo seguro para transferir datos en la web?",
+      options: [
+        "HTTP",
+        "FTP",
+        "HTTPS",
+        "POP"
+      ],
+      correctAnswer: "HTTPS",
+    },
+  ];
+
+  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill("")); // Estado de respuestas
   const [submitted, setSubmitted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [feedback, setFeedback] = useState<{ correct: boolean | null; correctAnswer?: string }>({
     correct: null,
     correctAnswer: undefined,
   });
-
-  useEffect(() => {
-    async function fetchQuestions() {
-      const response = await fetch("/api/questions");
-      const data = await response.json();
-      setQuestions(data);
-      setAnswers(Array(data.length).fill(""));
-    }
-    fetchQuestions();
-  }, []);
 
   const handleAnswerChange = (value: string) => {
     const updatedAnswers = [...answers];
@@ -41,21 +83,16 @@ export default function TakeQuiz() {
       const isCorrect = answers[currentQuestionIndex] === questions[currentQuestionIndex].correctAnswer;
       setFeedback({
         correct: isCorrect,
-        correctAnswer: questions[currentQuestionIndex].correctAnswer, // Store the correct answer
+        correctAnswer: questions[currentQuestionIndex].correctAnswer,
       });
     } else {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setFeedback({ correct: null, correctAnswer: undefined }); // Reset feedback for next question
+        setFeedback({ correct: null, correctAnswer: undefined });
       } else {
         setSubmitted(true);
       }
     }
-  };
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-    console.log("Respuestas enviadas:", answers);
   };
 
   return (
@@ -65,7 +102,7 @@ export default function TakeQuiz() {
       <div className="flex items-center justify-center flex-grow bg-gray-100">
         <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
           <h2 className="text-2xl font-bold mb-4 text-center">Responde el Quiz</h2>
-          
+
           {/* Feedback Icon with Text */}
           {feedback.correct !== null && (
             <div className="flex items-center justify-center mb-4">
@@ -103,7 +140,6 @@ export default function TakeQuiz() {
                   </li>
                 ))}
               </ol>
-              {/* Botón centrado */}
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleNext}
@@ -114,8 +150,9 @@ export default function TakeQuiz() {
               </div>
             </div>
           ) : (
-            <p>Cargando preguntas...</p>
+            <p>No hay preguntas disponibles para este quiz.</p>
           )}
+          
           {submitted && <p className="text-green-500 mt-4 text-center">Respuestas enviadas correctamente.</p>}
         </div>
       </div>

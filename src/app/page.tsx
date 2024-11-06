@@ -2,14 +2,24 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useView } from './context/view-context';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { view } = useView();
+  const router = useRouter(); 
+
+  const handleClick = () => {
+    if (view === 'student') {
+      router.push('/quizzes'); // Cambia la ruta según la que quieras para 'student'
+    } else {
+      router.push('/create-activity'); // Cambia la ruta según la que quieras para 'teacher'
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Navbar */}
-      <Navbar />
+      <Navbar showViewToggle={true} />
 
       {/* Hero Section */}
       <main className="flex-grow">
@@ -23,8 +33,9 @@ export default function Home() {
                 ? 'La plataforma educativa que revoluciona la forma en que aprendes.'
                 : 'La plataforma educativa que te ayuda a enseñar de manera efectiva.'}
             </p>
-            <button className="bg-white text-blue-600 font-semibold px-10 py-4 rounded-full shadow-md hover:bg-gray-200 transition duration-300">
-              {view === 'student' ? 'Comienza a Aprender' : 'Comienza a Enseñar'}
+            <button className="bg-white text-blue-600 font-semibold px-10 py-4 rounded-full shadow-md hover:bg-gray-200 transition duration-300"
+              onClick={handleClick}>
+              {view === 'student' ? 'Comenzar a Aprender' : 'Crear Actividad'}
             </button>
           </div>
         </section>

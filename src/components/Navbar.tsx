@@ -1,7 +1,8 @@
+"use client";
 import Link from 'next/link';
 import { useView } from '../app/context/view-context';
 
-export default function Navbar() {
+export default function Navbar({ showViewToggle }: { showViewToggle?: boolean }) {
   const { view, toggleView } = useView();
 
   return (
@@ -10,12 +11,12 @@ export default function Navbar() {
         <h1 className="text-3xl font-bold cursor-pointer transition duration-200 hover:text-gray-200">
           <Link href="/">Educados</Link>
         </h1>
-        <button 
+        {showViewToggle && <button 
           onClick={toggleView} 
           className="bg-gray-800 text-white px-4 py-2 rounded-md transition duration-200 hover:bg-gray-700"
         >
           Cambiar a vista de {view === 'student' ? 'Profesor' : 'Estudiante'}
-        </button>
+        </button>}
       </nav>
     </header>
   );
